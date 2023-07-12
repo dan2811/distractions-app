@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import OneSignal from 'react-native-onesignal';
 import {getFromBackend, retrieveClientEvent} from '../server/apiCalls';
 import {UserData} from '../types';
+import {colours} from '../styles/globalStyles';
 
 export const Main = () => {
   const {isSignedIn, setIsSignedIn, setUserData, setChatRooms, setClientEvent} =
@@ -61,6 +62,6 @@ const styles = StyleSheet.create({
   background: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#000000',
+    backgroundColor: colours.background,
   },
 });

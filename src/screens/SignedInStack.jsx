@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Home} from './home';
 import {Payment} from './Payment';
-import {Event} from './Event';
+import {Events} from './Events';
 import {Contact} from './Contact';
 import Navbar from '../components/Navbar';
 import {Header} from '../components/Header';
@@ -23,7 +23,7 @@ export const SignedInStack = () => {
           header: () => <Header />,
         }}>
         <Stack.Screen name="Home" component={Home} options={header} />
-        <Stack.Screen name="Event" component={Event} options={header} />
+        <Stack.Screen name="Event" component={Events} options={header} />
         <Stack.Screen name="Payment" component={Payment} options={header} />
         <Stack.Screen name="Contact" component={Contact} options={header} />
       </Stack.Navigator>

@@ -1,6 +1,9 @@
 import {ChatRoom, TMessage} from '../types';
 
-export const formatLastUpdated = (dateTime: string): string => {
+export const formatDateTime = (
+  dateTime: string,
+  includeTime: boolean,
+): string => {
   if (!dateTime) {
     return '';
   }
@@ -11,12 +14,19 @@ export const formatLastUpdated = (dateTime: string): string => {
       minute: '2-digit',
     });
   }
+  if (includeTime) {
+    return date.toLocaleString('en-GB', {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
   return date.toLocaleString('en-GB', {
     year: '2-digit',
     month: '2-digit',
     day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
   });
 };
 
@@ -65,4 +75,14 @@ export const sortRoomsByNewestMessage = (rooms: ChatRoom[]): ChatRoom[] => {
   const sortedRooms = sortedRoomMaps.map(map => map.room);
 
   return sortedRooms;
+};
+
+export const parseTime = (time: string): string => {
+  const [hours, minutes] = time.split(':');
+  return `${hours}:${minutes}`;
+};
+
+export const addDays = (date: Date, daysToAdd: number): Date => {
+  date.setDate(date.getDate() + daysToAdd);
+  return date;
 };

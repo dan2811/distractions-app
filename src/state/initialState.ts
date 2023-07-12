@@ -1,12 +1,12 @@
 import {hookstate, useHookstate} from '@hookstate/core';
-import {ChatRoom, ClientEvent, User, UserData} from '../types';
+import {ChatRoom, ClientEvent, ScreenName, User, UserData} from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface InitialState {
   user: User;
   event: ClientEvent | null;
   app: {
-    activeScreen: string;
+    activeScreen: ScreenName;
     displayNavBar: boolean;
   };
 }
@@ -51,7 +51,7 @@ export function useGlobalState() {
     get activeScreen() {
       return state.app.activeScreen.get();
     },
-    setActiveScreen(newScreen: string) {
+    setActiveScreen(newScreen: ScreenName) {
       state.app.activeScreen.set(newScreen);
     },
     get displayNavBar() {

@@ -13,24 +13,84 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import FullyPaidBanner from '../components/payments/FullyPaidBanner';
 import PaymentTile from '../components/payments/PaymentTile';
 import PreviousPayments from '../components/payments/PreviousPayments';
-import {retrieveClientEvent} from '../server/apiCalls';
+import {
+  getFromBackend,
+  postToBackend,
+  retrieveClientEvent,
+} from '../server/apiCalls';
 import {useGlobalState} from '../state/initialState';
-import {Transaction, ClientEvent, UserData} from '../types';
+import {Transaction, ClientEvent, UserData, ClientTokenResult} from '../types';
 import {env} from '../../env';
 import {updateClientEventWithPayment} from '../lib/payment';
 import {Icon, Text} from 'react-native-elements';
 import {colours, fontFam, fontSize} from '../styles/globalStyles';
 import {calculateDimension} from '../styles/helpers';
 import PaymentDetailsTable from '../components/payments/PaymentDetailsTable';
+import BraintreeDropIn from 'react-native-braintree-dropin-ui';
 
 export const Payment = () => {
-  const [webviewOpen, setWebviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [successData, setSuccessData] = useState('');
   const defaults = {gross: 0, deposit: 0, amountDue: 0, isDepositPaid: false};
   const {clientEvent, setClientEvent, user} = useGlobalState();
   const webviewRef = useRef<any>();
+
+  const commencePaymentJourney = async () => {
+    if (!user.data || !clientEvent) {
+      return;
+    }
+    const {clientToken} = await getFromBackend(
+      '/api/events/payment-token',
+      user.data?.jwt,
+    );
+
+    const depositAmount = clientEvent.deposit.toString();
+
+    BraintreeDropIn.show({
+      clientToken: clientToken,
+      // merchantIdentifier: 'applePayMerchantIdentifier',
+      // googlePayMerchantId: 'googlePayMerchantId',
+      // countryCode: 'US', //apple pay setting
+      // currencyCode: 'USD', //apple pay setting
+      // merchantName: 'Your Merchant Name for Apple Pay',
+      orderTotal: depositAmount,
+      googlePay: false,
+      applePay: false,
+      vaultManager: false,
+      payPal: true,
+      cardDisabled: false,
+      darkTheme: true,
+      fontFamily: fontFam,
+      boldFontFamily: fontFam,
+    })
+      .then(async (result: ClientTokenResult) => {
+        if (!user.data) {
+          console.error('ERROR: lost jwt');
+          return;
+        }
+        const {nonce, deviceData} = result;
+        const res = await postToBackend(
+          '/api/events/payment-checkout',
+          user.data.jwt,
+          JSON.stringify({
+            amount: depositAmount,
+            payment_method_nonce: nonce,
+            deviceData,
+          }),
+        );
+
+        console.log('PAYMENT RES: ', res);
+      })
+      .catch(error => {
+        if (error.code === 'USER_CANCELLATION') {
+          // update your UI to handle cancellation
+          console.log('User cancelled payment');
+        } else {
+          // update your UI to handle other errors
+          console.log('Other error: ', error);
+        }
+      });
+  };
 
   const handleRefresh = async () => {
     try {
@@ -61,62 +121,6 @@ export const Payment = () => {
   useEffect(() => {
     sendDataToWebView();
   }, []);
-  if (webviewOpen) {
-    return (
-      <SafeAreaView style={styles.blackBackground}>
-        <View style={styles.webViewContainer}>
-          {loading && <LoadingSpinner text="Loading..." />}
-          <View style={styles.closeWebviewContainer}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setWebviewOpen(false);
-              }}
-              activeOpacity={0.7}>
-              <Text style={styles.buttonText}>Close</Text>
-              <Icon
-                name="close"
-                size={20}
-                style={styles.icon}
-                color={colours.contrast}
-              />
-            </TouchableOpacity>
-          </View>
-          <WebView
-            onLoad={() => setLoading(false)}
-            hideKeyboardAccessoryView={true}
-            style={styles.webView}
-            source={{uri: `${env.distradminUrl}/#/paypal`}}
-            onMessage={data => {
-              setSuccessData(data.nativeEvent.data);
-              console.log(data.nativeEvent.data);
-            }}
-            onNavigationStateChange={async navState => {
-              console.log(navState.url);
-              if (navState.url.includes('paypalSuccess')) {
-                console.log('REACHED HERE ON PAYPAL SUCCESS');
-                console.log('SUCCESS PAYMENT DATA: ', JSON.parse(successData));
-                try {
-                  await updateClientEventWithPayment(
-                    user.data?.jwt,
-                    clientEvent,
-                    JSON.parse(successData),
-                  );
-                } catch (e) {
-                  console.log(e);
-                }
-                setWebviewOpen(false);
-              }
-              if (navState.url.includes('paypalCancel')) {
-                setWebviewOpen(false);
-              }
-            }}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.blackBackground}>
       {hasFullyPaid ? (
@@ -124,8 +128,9 @@ export const Payment = () => {
       ) : (
         <Button
           onPress={() => {
-            setLoading(true);
-            setWebviewOpen(true);
+            // setLoading(true);
+            // setWebviewOpen(true);
+            commencePaymentJourney();
           }}
           title="Make a Payment"
         />
@@ -199,11 +204,12 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
+    height: calculateDimension(0.5, 'height'),
   },
   tileContainer: {
     alignItems: 'center',
     height: '100%',
-    backgroundColor: '#000000',
+    backgroundColor: colours.background,
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -212,7 +218,7 @@ const styles = StyleSheet.create({
   },
   blackBackground: {
     height: calculateDimension(1, 'height'),
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   paymentHeader: {
     fontFamily: fontFam,

@@ -3,7 +3,10 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {colours, fontFam, fontWeight} from '../../styles/globalStyles';
 
-export const UnreadMessageCounter = ({count}: {count: number}) => {
+export const UnreadMessageCounter = ({count}: {count: Promise<number>}) => {
+  if (typeof count !== 'number') {
+    return null;
+  }
   return count > 0 ? (
     <View style={styles.unreadMessagesContainer}>
       <Text style={styles.unreadMessages}>{count}</Text>

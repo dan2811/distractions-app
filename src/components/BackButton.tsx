@@ -3,15 +3,17 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {colours} from '../styles/globalStyles';
 
-const BackButton = ({
-  setSelectedRoom,
+const BackButton = <TResetStateFunc extends Function, TResetValue>({
+  resetState,
+  resetValue,
 }: {
-  setSelectedRoom: (input: number) => void;
+  resetState: TResetStateFunc;
+  resetValue: TResetValue;
 }) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => setSelectedRoom(-1)}>
+      onPress={() => resetState(resetValue)}>
       <Icon name="arrow-back-ios" color={colours.tint} size={30} />
     </TouchableOpacity>
   );
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '20%',
+    width: '10%',
     backgroundColor: colours.background,
     padding: 10,
   },

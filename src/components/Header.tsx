@@ -11,7 +11,7 @@ export const Header = () => {
   const styles = StyleSheet.create({
     safeContainer: {
       height: calculateDimension(0.17, 'height'),
-      backgroundColor: colours.background,
+      backgroundColor: 'rgba(0,0,0,1)',
     },
     logoContainer: {
       justifyContent: 'flex-start',

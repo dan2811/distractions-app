@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useGlobalState} from '../state/initialState';
 import ChatRoomList from '../components/chat/ChatRoomList';
 import {ChatRoom} from '../types';
@@ -14,8 +14,9 @@ import {getFromBackend} from '../server/apiCalls';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {SocketContext} from '../server/socket';
 import {Alert} from 'react-native';
-import {Text} from 'react-native-elements';
-import {colours} from '../styles/globalStyles';
+import {Icon, Text} from 'react-native-elements';
+import {colours, fontFam, fontSize} from '../styles/globalStyles';
+import {Linking} from 'react-native';
 
 export const Contact = () => {
   const [selectedRoom, setSelectedRoom] = useState<number>(-1);
@@ -36,7 +37,6 @@ export const Contact = () => {
           '/api/chats/mine',
           user.data?.jwt,
         );
-        console.log(result[0].messages[0]);
         setChatData(result);
         setRefreshing(false);
         return result;
@@ -99,7 +99,7 @@ export const Contact = () => {
           setSelectedRoom={setSelectedRoom}
           chatroom={chatData.filter(room => room.id === selectedRoom)[0]}
         />
-      ) : chatData ? (
+      ) : chatData.length ? (
         <ChatRoomList
           rooms={chatData}
           setSelected={setSelectedRoom}
@@ -108,8 +108,20 @@ export const Contact = () => {
           currentUser={user}
         />
       ) : (
-        <View>
-          <Text>No chats!</Text>
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => {
+              try {
+                Linking.openURL('tel:0115 666 8276');
+              } catch (e) {
+                console.error('COULD NOT OPEN PHONE: ', e);
+              }
+            }}>
+            <Text style={styles.text}>
+              <Icon name="call" color={colours.faded} size={fontSize.large} />{' '}
+              0115 666 8276
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -119,5 +131,16 @@ export const Contact = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colours.background,
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  text: {
+    fontFamily: fontFam,
+    fontSize: fontSize.large,
+    color: colours.faded,
+    textAlign: 'center',
   },
 });

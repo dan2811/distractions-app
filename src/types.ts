@@ -17,34 +17,7 @@ export interface UserData {
   };
 }
 
-// const thing = {
-//   blocked: false,
-//   confirmed: true,
-//   createdAt: '2023-03-23T19:17:36.779Z',
-//   email: 'test@test.com',
-//   fName: null,
-//   id: 24,
-//   lName: null,
-//   messages: [
-//     {
-//       content: 'Sending a message',
-//       createdAt: '2023-04-18T15:33:51.417Z',
-//       id: 120,
-//       updatedAt: '2023-05-17T21:47:05.675Z',
-//     },
-//   ],
-//   provider: 'local',
-//   role: {
-//     createdAt: '2023-02-12T20:13:49.350Z',
-//     description: 'client',
-//     id: 3,
-//     name: 'client',
-//     type: 'superadmin',
-//     updatedAt: '2023-04-13T18:47:04.718Z',
-//   },
-//   updatedAt: '2023-03-23T19:17:36.779Z',
-//   username: 'test@test.com',
-// };
+export type ScreenName = 'Home' | 'Event' | 'Payment' | 'Contact';
 
 interface Role {
   id: number;
@@ -60,6 +33,7 @@ export interface ClientEvent {
   location: string;
   gross: number;
   deposit: number;
+  depositDueDate: string;
   amountDue: number;
   createdAt: ISODateString;
   updatedAt: ISODateString;
@@ -98,12 +72,6 @@ export interface Package {
   name: string;
 }
 
-export interface Transaction {
-  id: number;
-  amount: number;
-  date: string;
-}
-
 export interface ChatRoom {
   id: number;
   name: string;
@@ -132,4 +100,21 @@ export interface Sender {
   provider: string;
   updatedAt: string;
   username: string;
+}
+
+//PAYMENTS
+export interface ClientTokenResult {
+  description: string;
+  deviceData: JSON;
+  isDefault: boolean;
+  nonce: string;
+  type: string;
+}
+
+export interface Transaction {
+  id: number;
+  amount: number;
+  date: string;
+  status: string;
+  method: string;
 }

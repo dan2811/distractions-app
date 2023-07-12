@@ -2,9 +2,14 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {useGlobalState} from '../../state/initialState';
-import {colours, fontFam, fontSize, fontWeight} from '../../styles/globalStyles';
+import {
+  colours,
+  fontFam,
+  fontSize,
+  fontWeight,
+} from '../../styles/globalStyles';
 import {TMessage} from '../../types';
-import {formatLastUpdated} from '../../lib/dateUtils';
+import {formatDateTime} from '../../lib/dateTimeUtils';
 
 interface MessageProps {
   message: TMessage;
@@ -21,7 +26,7 @@ const Message = ({message}: MessageProps) => {
         {content}
       </Text>
       <Text style={styles.sentTime} numberOfLines={999}>
-        {formatLastUpdated(createdAt)}
+        {formatDateTime(createdAt, true)}
       </Text>
     </View>
   ) : (
@@ -33,7 +38,7 @@ const Message = ({message}: MessageProps) => {
         {content}
       </Text>
       <Text style={styles.sentTime} numberOfLines={999}>
-        {formatLastUpdated(createdAt)}
+        {formatDateTime(createdAt, true)}
       </Text>
     </View>
   );

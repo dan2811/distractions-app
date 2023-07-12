@@ -3,7 +3,7 @@ import {ActivityIndicator, Animated, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {colours, fontFam, fontSize} from '../styles/globalStyles';
 
-const LoadingSpinner = ({text}: {text: string}) => {
+const LoadingSpinner = ({text = ''}: {text?: string}) => {
   const [fadeAnim] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
@@ -41,12 +41,10 @@ const LoadingSpinner = ({text}: {text: string}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colours.backgroundTransparent,
-    height: '100%',
-    width: '100%',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   loadingText: {
     color: colours.tint,
@@ -56,7 +54,6 @@ const styles = StyleSheet.create({
   },
   spinner: {
     backgroundColor: colours.background,
-    paddingBottom: 200,
     paddingTop: 15,
   },
 });

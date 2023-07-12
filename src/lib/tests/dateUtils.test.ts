@@ -1,5 +1,5 @@
 import {ChatRoom} from '../../types';
-import {sortRoomsByNewestMessage} from '../dateUtils';
+import {sortRoomsByNewestMessage} from '../dateTimeUtils';
 
 describe('dateUtils', () => {
   describe('sortRooms', () => {

@@ -2,6 +2,8 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import "RNSplashScreen.h"
+#import "BraintreeCore.h"
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -14,8 +16,25 @@
 
   [super application:application didFinishLaunchingWithOptions:launchOptions];
     [RNSplashScreen show];
-
+  
+  [BTAppContextSwitcher setReturnURLScheme:self.paymentsURLScheme];
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+
+    if ([url.scheme localizedCaseInsensitiveCompare:self.paymentsURLScheme] == NSOrderedSame) {
+        return [BTAppContextSwitcher handleOpenURL:url];
+    }
+
+    return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+- (NSString *)paymentsURLScheme {
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    return [NSString stringWithFormat:@"%@.%@", bundleIdentifier, @"payments"];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

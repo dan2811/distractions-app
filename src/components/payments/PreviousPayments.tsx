@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {colours, fontFam, fontSize} from '../../styles/globalStyles';
 import {Transaction} from '../../types';
 import PaymentListItem from './PaymentListItem';
+import {calculateDimension} from '../../styles/helpers';
 
 const PreviousPayments = ({payments}: {payments: Transaction[]}) => {
   return (
@@ -10,8 +10,11 @@ const PreviousPayments = ({payments}: {payments: Transaction[]}) => {
       {payments.map(payment => (
         <PaymentListItem
           key={payment.id}
-          date={payment.date}
+          id={payment.id}
           amount={payment.amount}
+          date={payment.date}
+          status={payment.status}
+          method={payment.method}
         />
       ))}
     </View>
@@ -20,10 +23,8 @@ const PreviousPayments = ({payments}: {payments: Transaction[]}) => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
-    backgroundColor: colours.background,
     width: '100%',
-    height: 100,
+    height: calculateDimension(1, 'height'),
   },
 });
 

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Dimensions,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {ChatRoom, User} from '../../types';
 import {
@@ -15,10 +9,10 @@ import {
   fontWeight,
 } from '../../styles/globalStyles';
 import {
-  formatLastUpdated,
+  formatDateTime,
   getNewestMessage,
   sortRoomsByNewestMessage,
-} from '../../lib/dateUtils';
+} from '../../lib/dateTimeUtils';
 import {ImmutableObject} from '@hookstate/core';
 import {UnreadMessageCounter} from './UnreadMessageCounter';
 import {getUnreadMessages} from '../../lib/chatHelpers';
@@ -44,7 +38,15 @@ const ChatRoomList = ({
     return <></>;
   }
 
-  const userId = currentUser.data.user.id;
+  const handleGetCountUnreadMessages = async (item: any) => {
+    const unreads = await getUnreadMessages(
+      currentUser.data?.jwt,
+      item.messages,
+    );
+    console.log('UNREADS: ', unreads);
+    return unreads.length;
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.chatRoomListHeader}>
@@ -67,14 +69,15 @@ const ChatRoomList = ({
                   {item.name}
                 </Text>
                 <Text style={styles.lastUpdateTime} numberOfLines={1}>
-                  {formatLastUpdated(
+                  {formatDateTime(
                     getNewestMessage(item.messages)?.createdAt,
+                    true,
                   )}
                 </Text>
               </View>
               <View style={styles.rightContainer}>
                 <UnreadMessageCounter
-                  count={getUnreadMessages(item.messages, userId).length}
+                  count={handleGetCountUnreadMessages(item)}
                 />
               </View>
             </View>

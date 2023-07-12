@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
 import {TMessage} from '../../types';
 import Message from './Message';
-import {sortByAscendingDate} from '../../lib/dateUtils';
+import {sortByAscendingDate} from '../../lib/dateTimeUtils';
 
 const Messages = ({messages}: {messages: TMessage[]}) => {
   return (

@@ -40,3 +40,20 @@ export const postToBackend = async (
   console.log('postToBackend response', response);
   return response.json();
 };
+
+export const putToBackend = async (
+  endpoint: string,
+  jwt: string,
+  data: any,
+) => {
+  const response = await fetch(`${env.backendUrl}${endpoint}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  });
+  console.log('putToBackend response', response);
+  return response;
+};

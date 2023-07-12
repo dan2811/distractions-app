@@ -42,6 +42,19 @@ target 'the-distractions-band' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  
+  pod 'Braintree'
+
+  pod 'BraintreeDropIn'
+
+   # comment the next line to disable Apple pay
+  pod 'Braintree/ApplePay'
+
+   # comment the next line to disable PayPal
+  pod 'Braintree/PayPal'
+
+   # Data collector for Braintree Advanced Fraud Tools
+  pod 'Braintree/DataCollector'
 
   target 'the-distractions-bandTests' do
     inherit! :complete

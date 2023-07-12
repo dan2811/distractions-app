@@ -8,7 +8,7 @@ import {
 } from '../../styles/globalStyles';
 import BackButton from '../BackButton';
 import {Icon, Text} from 'react-native-elements';
-import {ChatRoom} from '../../types';
+import {ChatRoom, TMessage} from '../../types';
 import Messages from './Messages';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../state/initialState';
@@ -33,23 +33,31 @@ const Chat = ({setSelectedRoom, chatroom}: ChatProps) => {
   };
 
   useEffect(() => {
-    if (!user.data) {
-      return;
-    }
-    const userId = user.data.user.id;
-    const unreadMessages = getUnreadMessages(
-      chatroom.messages,
-      user.data.user.id,
-    );
-
-    if (unreadMessages.length > 0) {
-      unreadMessages.forEach(currentMessage => {
-        socket.emit('messageRead', {
-          userId,
-          messageId: currentMessage.id,
-        });
-      });
-    }
+    const fetchUnreadMessages = async () => {
+      let unreadMessages = [] as TMessage[];
+      if (!user.data) return;
+      try {
+        unreadMessages = await getUnreadMessages(
+          user.data.jwt,
+          chatroom.messages,
+        );
+      } catch (e) {
+        console.log('Error fetching unread messages: ', e);
+      }
+    
+      if (user.data) {
+        const userId = user.data.user.id;
+        if (unreadMessages.length > 0) {
+          unreadMessages.forEach((currentMessage: TMessage) => {
+            socket.emit('messageRead', {
+              userId,
+              messageId: currentMessage.id,
+            });
+          });
+        }
+      }
+    };
+      fetchUnreadMessages();
   }, []);
 
   return (
@@ -62,7 +70,7 @@ const Chat = ({setSelectedRoom, chatroom}: ChatProps) => {
       contentOffset={{x: 0, y: 350}}
       keyboardShouldPersistTaps="handled">
       <View style={styles.headerContainer}>
-        <BackButton setSelectedRoom={setSelectedRoom} />
+        <BackButton resetState={setSelectedRoom} resetValue={-1} />
         <Text numberOfLines={1} style={styles.chatRoomTitle}>
           {chatroom.name}
         </Text>

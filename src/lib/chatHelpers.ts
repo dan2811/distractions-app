@@ -1,48 +1,21 @@
-import {TMessage} from '../types';
-import {sortByAscendingDate} from './dateUtils';
+import { Alert } from 'react-native';
+import { getFromBackend } from '../server/apiCalls';
+import { TMessage } from '../types';
 
-export const getUnreadMessages = (
+export const getUnreadMessages = async (
+  jwt: string | undefined,
   messages: TMessage[],
-  currentUserId: number,
-): TMessage[] => {
-  console.log('ALL MESSAGES IN THIS CHAT: ', messages.length);
+): Promise<TMessage[]> => {
+  if (!jwt) {
+    Alert.alert('Unexpected problem, please restart the app.');
+    throw new Error('Missing access token');
+  }
   if (!messages.length) {
     return [];
   }
+  const chatId = messages[0].chat.id;
+  const endpoint = `/api/chats/unread/${chatId}`;
+  const unreadMessages = await getFromBackend(endpoint, jwt);
 
-  const messagesFromOtherUsers = messages.filter(
-    message => message.sender.id !== currentUserId,
-  );
-
-  console.log('MESSAGES FROM OTHER USERS: ', messagesFromOtherUsers.length);
-
-  if (!messagesFromOtherUsers) {
-    return [];
-  }
-  //First message in the following array is the most recent
-  const sortedMessages = sortByAscendingDate<TMessage, 'createdAt'>(
-    messagesFromOtherUsers,
-    'createdAt',
-  );
-
-  let unreadMessages = [] as TMessage[];
-  for (let i = 0; i < sortedMessages.length; i++) {
-    const usersThatHaveReadCurrentMessage = sortedMessages[i].hasRead as any;
-    if (!usersThatHaveReadCurrentMessage) {
-      unreadMessages.push(sortedMessages[i]);
-      continue;
-    }
-    const userHasReadMessage = usersThatHaveReadCurrentMessage.find(
-      (user: any) => user.id === currentUserId,
-    );
-    if (!userHasReadMessage) {
-      unreadMessages.push(sortedMessages[i]);
-      continue;
-    } else {
-      break;
-    }
-  }
-
-  console.log('UNREAD MESSAGES', unreadMessages.length);
   return unreadMessages;
 };

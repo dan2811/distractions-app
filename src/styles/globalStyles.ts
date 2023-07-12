@@ -15,18 +15,19 @@ export const fontWeight = {
 
 export const colours = {
   tint: '#a8a17b',
-  background: 'black',
+  background: '#121212',
   backgroundTransparent: 'rgba(0, 0, 0, 0.85)',
   contrast: 'white',
   faded: 'lightgrey',
   warning: 'red',
+  positive: 'green',
 };
 
 export const fontFam = 'Futura';
 
 export const globalStyles = StyleSheet.create({
   main: {
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   loginContainer: {
     flex: 9,
