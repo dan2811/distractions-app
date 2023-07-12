@@ -5,6 +5,7 @@ export const getUnreadMessages = (
   messages: TMessage[],
   currentUserId: number,
 ): TMessage[] => {
+  console.log('ALL MESSAGES IN THIS CHAT: ', messages.length);
   if (!messages.length) {
     return [];
   }
@@ -12,6 +13,8 @@ export const getUnreadMessages = (
   const messagesFromOtherUsers = messages.filter(
     message => message.sender.id !== currentUserId,
   );
+
+  console.log('MESSAGES FROM OTHER USERS: ', messagesFromOtherUsers.length);
 
   if (!messagesFromOtherUsers) {
     return [];
@@ -39,5 +42,7 @@ export const getUnreadMessages = (
       break;
     }
   }
+
+  console.log('UNREAD MESSAGES', unreadMessages.length);
   return unreadMessages;
 };

@@ -4,7 +4,7 @@ import {Text} from 'react-native-elements';
 import {useGlobalState} from '../../state/initialState';
 import {colours, fontFam, fontSize, fontWeight} from '../../styles/globalStyles';
 import {TMessage} from '../../types';
-import {formatLastUpdated} from '../../logic/dateUtils';
+import {formatLastUpdated} from '../../lib/dateUtils';
 
 interface MessageProps {
   message: TMessage;

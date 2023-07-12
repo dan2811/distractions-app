@@ -7,8 +7,8 @@ import {
   fontSize,
   fontWeight,
 } from '../../styles/globalStyles';
-import {camelCaseToTitleCase} from '../../logic/stringManipulation';
-import {sortArrayOfObjectsByKeyAlphabetically} from '../../logic/sorting';
+import {camelCaseToTitleCase} from '../../lib/stringManipulation';
+import {sortArrayOfObjectsByKeyAlphabetically} from '../../lib/sorting';
 
 const PaymentDetailsTable = ({
   paymentInfo,

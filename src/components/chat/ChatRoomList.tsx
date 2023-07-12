@@ -18,10 +18,10 @@ import {
   formatLastUpdated,
   getNewestMessage,
   sortRoomsByNewestMessage,
-} from '../../logic/dateUtils';
+} from '../../lib/dateUtils';
 import {ImmutableObject} from '@hookstate/core';
 import {UnreadMessageCounter} from './UnreadMessageCounter';
-import {getUnreadMessages} from '../../logic/chatHelpers';
+import {getUnreadMessages} from '../../lib/chatHelpers';
 import {calculateDimension} from '../../styles/helpers';
 
 interface ChatRoomListProps {

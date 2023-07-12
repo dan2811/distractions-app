@@ -13,7 +13,7 @@ import Messages from './Messages';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../state/initialState';
 import {SocketContext} from '../../server/socket';
-import {getUnreadMessages} from '../../logic/chatHelpers';
+import {getUnreadMessages} from '../../lib/chatHelpers';
 import {calculateDimension} from '../../styles/helpers';
 
 interface ChatProps {

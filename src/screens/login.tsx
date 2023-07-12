@@ -13,7 +13,7 @@ import {useGlobalState} from '../state/initialState';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {colours, fontFam} from '../styles/globalStyles';
 import LoadingSpinner from '../components/LoadingSpinner';
-import {login} from '../logic/loginHelpers';
+import {login} from '../lib/loginHelpers';
 
 export const Login = () => {
   const [email, setEmail] = useState('');

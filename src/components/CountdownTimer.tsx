@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {setTeaserText} from '../logic/teaserText';
+import {setTeaserText} from '../lib/teaserText';
 
 const CountdownTimer = ({date}: {date: number}) => {
   const [daysUntil, setDaysUntil] = useState(0);

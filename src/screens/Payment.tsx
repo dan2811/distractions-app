@@ -17,7 +17,7 @@ import {retrieveClientEvent} from '../server/apiCalls';
 import {useGlobalState} from '../state/initialState';
 import {Transaction, ClientEvent, UserData} from '../types';
 import {env} from '../../env';
-import {updateClientEventWithPayment} from '../logic/payment';
+import {updateClientEventWithPayment} from '../lib/payment';
 import {Icon, Text} from 'react-native-elements';
 import {colours, fontFam, fontSize} from '../styles/globalStyles';
 import {calculateDimension} from '../styles/helpers';
